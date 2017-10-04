@@ -10,15 +10,7 @@ export default Ember.Object.extend({
   hasNoChannels: true,
 
   setup(config, eventHandler) {
-    assert(
-      '[ember-sockets-guru] You need to provide socketAddress in config in the socket-guru service',
-      !!get(config, 'socketAddress')
-    );
-    assert(
-      '[ember-sockets-guru] You need to provide eventHandler in the socket-guru service',
-      typeof eventHandler === 'function'
-    );
-
+    this._checkConfig(config);
     const socketAddress = get(config, 'socketAddress');
     const actionCable = get(this, 'actionCableService').createConsumer(socketAddress);
     setProperties(this, { actionCable, eventHandler, joinedChannels: {} });
@@ -49,19 +41,7 @@ export default Ember.Object.extend({
 
     set(this, 'joinedChannels', newChannels);
   },
-
-  emit(channelName, data) {
-    const joinedChannel = get(this, `joinedChannels.${channelName}`);
-    if (joinedChannel) {
-      joinedChannel.send(data);
-    } else {
-      assert(
-      '[ember-sockets-guru] You were trying to emit message to unsubscribed channel',
-      false
-    );
-    }
-  },
-
+  
   unsubscribeChannels(channels) {
     const joinedChannels = get(this, 'joinedChannels');
 
@@ -78,7 +58,31 @@ export default Ember.Object.extend({
     });
   },
 
+  emit(channelName, data) {
+    const joinedChannel = get(this, `joinedChannels.${channelName}`);
+    if (joinedChannel) {
+      joinedChannel.send(data);
+    } else {
+      assert(
+      '[ember-sockets-guru] You were trying to emit message to unsubscribed channel',
+      false
+    );
+    }
+  },
+
   disconnect() {
     get(this, 'actionCable').disconnect();
   },
+  
+
+  _checkConfig(config) {
+    assert(
+      '[ember-sockets-guru] You need to provide socketAddress in config in the socket-guru service',
+      !!get(config, 'socketAddress')
+    );
+    assert(
+      '[ember-sockets-guru] You need to provide eventHandler in the socket-guru service',
+      typeof eventHandler === 'function'
+    );
+  }
 });
