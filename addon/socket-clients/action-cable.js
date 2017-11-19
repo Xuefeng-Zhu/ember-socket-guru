@@ -41,7 +41,7 @@ export default Ember.Object.extend({
 
     set(this, 'joinedChannels', newChannels);
   },
-  
+
   unsubscribeChannels(channels) {
     const joinedChannels = get(this, 'joinedChannels');
 
@@ -73,7 +73,6 @@ export default Ember.Object.extend({
   disconnect() {
     get(this, 'actionCable').disconnect();
   },
-  
 
   _checkConfig(config) {
     assert(
@@ -84,5 +83,5 @@ export default Ember.Object.extend({
       '[ember-sockets-guru] You need to provide eventHandler in the socket-guru service',
       typeof eventHandler === 'function'
     );
-  }
+  },
 });
