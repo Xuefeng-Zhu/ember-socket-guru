@@ -10,7 +10,7 @@ export default Ember.Object.extend({
   hasNoChannels: true,
 
   setup(config, eventHandler) {
-    this._checkConfig(config);
+    this._checkConfig(config, eventHandler);
     const socketAddress = get(config, 'socketAddress');
     const actionCable = get(this, 'actionCableService').createConsumer(socketAddress);
     setProperties(this, { actionCable, eventHandler, joinedChannels: {} });
@@ -74,7 +74,7 @@ export default Ember.Object.extend({
     get(this, 'actionCable').disconnect();
   },
 
-  _checkConfig(config) {
+  _checkConfig(config, eventHandler) {
     assert(
       '[ember-sockets-guru] You need to provide socketAddress in config in the socket-guru service',
       !!get(config, 'socketAddress')
